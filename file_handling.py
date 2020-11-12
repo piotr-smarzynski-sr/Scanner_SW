@@ -41,13 +41,13 @@ def checkFile(filename):
                 line_numbers.append((int(line_parsed[NO_INDEX]), line_no + 1))
 
             else:
-                print('Incorrect line syntax', line_no + 1)
+                print('Incorrect syntax in line', line_no + 1)
 
         last_number = 0
-        for index, number in enumerate(line_numbers):
-            if last_number != number[NUMBER_SAVED_INDEX] - 1:
-                print('Incorrect numbering in line', number[ACTUAL_LINE_NUMBER_INDEX], ':', number[NUMBER_SAVED_INDEX], 'after', last_number)
-            last_number = number[NUMBER_SAVED_INDEX]
+        for number_saved, line_number in line_numbers:
+            if last_number != number_saved - 1:
+                print('Incorrect numbering in line', line_number, ':', number_saved, 'after', last_number)
+            last_number = number_saved
 
     print('File', filename, 'checked\n')
 
