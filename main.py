@@ -5,6 +5,12 @@ from udp_communication import get_ip, parse_ip, send_data
 from data_packing import pack_data
 
 #TODO argparse
+'''
+pipeline no
+IP address of receiver
+station_no
+
+'''
 
 barcode = "*1-2-0003-0027*"
 # barcode = scanBCR()
@@ -25,6 +31,6 @@ if text != 'NOT_FOUND':
     msg = pack_data(ip_parsed, line, 2, text.encode())
     print('msg: ', msg)
 
-    send_data('localhost', 50000, msg)
+    send_data('localhost', 50000, msg) #dane muszą być wysyłane często, nawet 10/s, bo robot zerwie komunikację
     print('data sent')
     #todo zamknac w petle

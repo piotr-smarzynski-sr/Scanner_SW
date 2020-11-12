@@ -11,6 +11,6 @@ def pack_data(ip, line_no, machine_no, data):
     """ 
     from struct import pack
     #todo machine_no bedzie nazwane pipeline_no
-    packed = pack('>BBBBQb10s', ip[0], ip[1], ip[2], ip[3], line_no, machine_no, data)
+    packed = pack('<BBBBQb10s', ip[0], ip[1], ip[2], ip[3], line_no, machine_no, data)
     return packed
 
