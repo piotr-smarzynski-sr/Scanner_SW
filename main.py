@@ -1,8 +1,9 @@
-from parse_and_search import parseBCR, searchLineFromBCR
+from parse_and_search import parseBCR
 from scanner_api import scanBCR
 import socket
 from udp_communication import get_ip, parse_ip, send_data
 from data_packing import pack_data
+from file_handling import searchLineFromBCR, checkFile
 
 #TODO argparse
 '''
@@ -12,7 +13,10 @@ station_no
 
 '''
 
+checkFile('barcodes.txt')
+
 barcode = "*1-2-0003-0027*"
+barcode = "*1-2-0003-0002*"
 # barcode = scanBCR()
 print('Scanning complete')
 

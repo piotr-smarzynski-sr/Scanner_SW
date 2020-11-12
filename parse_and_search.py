@@ -1,6 +1,9 @@
 LINE_NO_SEARCH = 3
+LABEL_CORRECT = 2
 TEXT_SEARCH = 3
 LINE_TEXT_BARCODE = 1
+BARCODE_EXPECTED_PARTS = 4
+
 
 def parseBCR(barcode):
     """Parse scanned barcode
@@ -11,32 +14,25 @@ def parseBCR(barcode):
     Returns:
         int: number of line extracted from barcode
     """
+    line_no_search = 0
     barcode = barcode.replace("*", "") # remove asterisks
+    barcode = barcode.replace(" ", "") # remove spaces
     parsed = barcode.split('-')
-    print('parsed: ', parsed)
-    #jezeli indeks 2 jest poza zakresem 0-105 to etykieta jest bledna
-    # sprawdzic ilosc czesci i poprawnosc znakow
-    line_no_search = int(parsed[LINE_NO_SEARCH])
+    if len(parsed) == 4:
+        for index, part in enumerate(parsed):
+            if part.isnumeric() is False:
+                print('Part', index + 1, 'of barcode is not numeric:', part)
 
-    return line_no_search
+        print('parsed: ', parsed)
+        #jezeli indeks 2 jest poza zakresem 0-105 to etykieta jest bledna
+        # sprawdzic ilosc czesci i poprawnosc znakow
+        label_correct = int(parsed[LABEL_CORRECT])
+        if label_correct >= 0 and label_correct <= 105:
+            line_no_search = int(parsed[LINE_NO_SEARCH])
+
+        return line_no_search
     
-
-def searchLineFromBCR(line_no_search, filename):
-    """Search and return line from given file
-
-    Args:
-        line (int): line number to be searched
-        filename (file): text file to be searched
-    """
-    line_found = False
-    line_text = ''
-    with open(filename) as file_opened:
-        for i, line in enumerate(file_opened):
-            if i == line_no_search - 1: #one line offset
-                line_text = line
-                line_found = True
-
-    if line_found is False:
-        line_text = 'NOT_FOUND'
-
-    return line_text
+    else:
+        print('Wrong barcode scanned!')
+        return -1
+    
