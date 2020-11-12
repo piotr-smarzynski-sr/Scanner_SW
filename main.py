@@ -1,4 +1,30 @@
-import serial
-with serial.Serial('COM14', 9600, timeout=10) as ser:
-    s = ser.read(13)        # read up to ten bytes (timeout)
-    print('s: ', s)
+from parse_and_search import parseBCR, searchLineFromBCR
+from scanner_api import scanBCR
+import socket
+from udp_communication import get_ip, parse_ip, send_data
+from data_packing import pack_data
+
+#TODO argparse
+
+barcode = "*1-2-0003-0027*"
+# barcode = scanBCR()
+print('Scanning complete')
+
+line = parseBCR(barcode)
+print('line: ', line)
+
+#todo dodac znaczniki linii zakonczone znakiem specjalnym do pliku barcodes
+text = searchLineFromBCR(line, 'barcodes.txt')
+print('text: ', text)
+
+if text != 'NOT_FOUND':
+    ip_address = get_ip()
+    ip_parsed = parse_ip(ip_address)
+    print('ip_parsed: ', ip_parsed)
+
+    msg = pack_data(ip_parsed, line, 2, text.encode())
+    print('msg: ', msg)
+
+    send_data('localhost', 50000, msg)
+    print('data sent')
+    #todo zamknac w petle
