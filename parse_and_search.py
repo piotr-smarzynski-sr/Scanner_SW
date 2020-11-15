@@ -1,3 +1,5 @@
+from thread_print import s_print
+
 LINE_NO_SEARCH = 3
 LABEL_CORRECT = 2
 TEXT_SEARCH = 3
@@ -20,9 +22,9 @@ def parseBCR(barcode):
     if len(parsed) == BARCODE_EXPECTED_PARTS:
         for index, part in enumerate(parsed):
             if part.isnumeric() is False:
-                print('Part', index + 1, 'of barcode is not numeric:', part)
+                s_print('Part', index + 1, 'of barcode is not numeric:', part)
 
-        print('parsed: ', parsed)
+        s_print('parsed: ', parsed)
         label_correct = int(parsed[LABEL_CORRECT])
         if label_correct >= 0 and label_correct <= 105:
             line_no_search = int(parsed[LINE_NO_SEARCH])
@@ -30,6 +32,6 @@ def parseBCR(barcode):
         return line_no_search
     
     else:
-        print('Wrong barcode scanned!')
-        return -1
+        s_print('Wrong barcode scanned!')
+        return 0
     

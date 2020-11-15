@@ -1,3 +1,8 @@
+from colorama import Fore, init
+from thread_print import s_print
+
+init()
+
 def scanBCR(com_port='COM3', baud=9600, timeout=10):
     """Use serial scanner to scan barcode
 
@@ -12,5 +17,8 @@ def scanBCR(com_port='COM3', baud=9600, timeout=10):
     import serial
     with serial.Serial(com_port, baud, timeout=timeout) as ser:
         serial_data = ser.read(13)        # read up to ten bytes (timeout)
-        print('s: ', serial_data.decode())
-    return serial_data
+        s_print(Fore.RED, 'scanned: ', serial_data.decode(), Fore.RESET)
+        # s_print(Fore.RED, 'type(serial_data): ', type(serial_data), Fore.RESET)
+        # assert isinstance(serial_data, str), 'Not string'
+        
+    return serial_data.decode()
