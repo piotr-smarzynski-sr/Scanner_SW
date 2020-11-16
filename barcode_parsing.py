@@ -32,6 +32,6 @@ def parseBCR(barcode):
         return line_no_search
     
     else:
-        s_print('Wrong barcode scanned!')
+        # s_print('Wrong barcode scanned!')
         return 0
     

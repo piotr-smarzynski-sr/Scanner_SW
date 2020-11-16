@@ -3,9 +3,16 @@ from time import sleep
 from udp_communication import get_ip, parse_ip, send_data
 from data_packing import pack_data_egd
 from file_handling import searchLineFromBCR, checkFile
-from parse_and_search import parseBCR
+from barcode_parsing import parseBCR
 from scanner_api import scanBCR
 from thread_print import s_print
+
+PROTOCOL_NO = 13
+PROTOCOL_VERSION = 1
+TIMESTAMP = 0
+STATUS = 0
+CONF_SIGNATURE = 0
+RESERVED = 0
 
 def scanning_loop(queue_output, com_port='COM3', baud=9600, timeout=10):
     serial_data = ''
@@ -20,11 +27,11 @@ def scanning_loop(queue_output, com_port='COM3', baud=9600, timeout=10):
         sleep(1)
 
 
-def parse_and_send_loop(queue_input):
+def parse_and_send_loop(queue_input, ip_address_dest, station_no, pipeline, period):
     packet_counter = 0
     barcode_counter = 0
-    while True:
-        barcode = ''
+    barcode = ''
+    while True:        
         if queue_input.empty() is False:
             barcode = queue_input.get()
             barcode_counter += 1
@@ -36,22 +43,43 @@ def parse_and_send_loop(queue_input):
         s_print('line: ', line)
 
         text = searchLineFromBCR(line, 'barcodes.txt')
-        s_print('text: ', text)
+        if text != 'NOT_FOUND':
+            s_print('text: ', text)
 
         ip_address = get_ip()
         ip_parsed = parse_ip(ip_address)
-        # s_print('ip_parsed: ', ip_parsed)
 
-        msg = pack_data_egd(13, 1, packet_counter, ip_parsed, 12, 0, 0, 0, 0, line, barcode_counter, 2)
+        msg = pack_data_egd(PROTOCOL_NO, 
+                            PROTOCOL_VERSION, 
+                            packet_counter, 
+                            ip_parsed, 
+                            pipeline, 
+                            TIMESTAMP, 
+                            STATUS, 
+                            CONF_SIGNATURE, 
+                            RESERVED, 
+                            line, 
+                            barcode_counter, 
+                            station_no)
         
-        # s_print('msg: ', msg)
+        s_print('msg: ',PROTOCOL_NO, 
+                        PROTOCOL_VERSION, 
+                        packet_counter, 
+                        ip_parsed, 
+                        pipeline, 
+                        TIMESTAMP, 
+                        STATUS, 
+                        CONF_SIGNATURE, 
+                        RESERVED, 
+                        line, 
+                        barcode_counter, 
+                        station_no)
 
-        send_data('192.168.254.92', 18246, msg) #dane muszą być wysyłane często, nawet 10/s, bo robot zerwie komunikację
-        s_print('data sent')
-        #todo zamknac w petle
+        send_data(ip_address_dest, 18246, msg) #dane muszą być wysyłane często, nawet 10/s, bo robot zerwie komunikację
+
         packet_counter += 1
         if packet_counter > 65535:
             packet_counter = 0
-        sleep(1)
+        sleep(period)
 
 

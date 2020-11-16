@@ -1,4 +1,4 @@
-from parse_and_search import parseBCR
+from barcode_parsing import parseBCR
 from scanner_api import scanBCR
 import socket
 from udp_communication import get_ip, parse_ip, send_data
