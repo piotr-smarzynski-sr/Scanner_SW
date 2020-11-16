@@ -28,7 +28,7 @@ def scanning_loop(queue_output, com_port='COM3', baud=9600, timeout=10):
     while True:
         serial_data = scanBCR(com_port, baud, timeout)
 
-        if serial_data != serial_data_last:
+        if serial_data != serial_data_last and serial_data != '':
             queue_output.put(serial_data)
 
         serial_data_last = serial_data
@@ -48,6 +48,7 @@ def parse_and_send_loop(queue_input, ip_address_dest, station_no, pipeline, peri
     packet_counter = 0
     barcode_counter = 0
     barcode = ''
+    line = 0
     while True:        
         if queue_input.empty() is False:
             barcode = queue_input.get()
@@ -55,9 +56,8 @@ def parse_and_send_loop(queue_input, ip_address_dest, station_no, pipeline, peri
             if barcode_counter > 255:
                 barcode_counter = 0
             s_print('barcode_counter: ', barcode_counter)
-
-        line = parseBCR(barcode)
-        s_print('line: ', line)
+            line = parseBCR(barcode)
+            s_print('line: ', line)
 
         text = searchLineFromBCR(line, 'barcodes.txt')
         if text != 'NOT_FOUND':

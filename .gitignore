@@ -31,3 +31,7 @@ _ReSharper*/
 #Nuget packages folder
 packages/
 *cache*
+barcode_database/
+build/
+dist/
+*.spec

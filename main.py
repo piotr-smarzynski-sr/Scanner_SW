@@ -13,8 +13,6 @@ from queue import Queue
 from time import sleep
 
 if __name__ == "__main__":
-
-
     parser = argparse.ArgumentParser()
     parser.add_argument('-pipe' ,'--pipeline', type=int, default=1, help='Pipeline no')
     parser.add_argument('-ip', '--ip_address', type=str, default='192.168.254.92', help='IP address of receiver')
@@ -48,8 +46,12 @@ if __name__ == "__main__":
         thread.start()
         s_print('thread', thread.name, 'started!')
 
-    while True:
-        sleep(1)
+    try:
+        while True:
+            sleep(1)
+    except KeyboardInterrupt:
+        s_print("Exiting program")
 
-    #todo close nicely
+
+    #TODO close nicely
     
