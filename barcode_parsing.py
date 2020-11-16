@@ -18,6 +18,7 @@ def parseBCR(barcode):
     line_no_search = 0
     barcode = barcode.replace("*", "") # remove asterisks
     barcode = barcode.replace(" ", "") # remove spaces
+    barcode = barcode.replace("_R2", "") # remove suffix
     parsed = barcode.split('-')
     if len(parsed) == BARCODE_EXPECTED_PARTS:
         for index, part in enumerate(parsed):

@@ -15,6 +15,14 @@ CONF_SIGNATURE = 0
 RESERVED = 0
 
 def scanning_loop(queue_output, com_port='COM3', baud=9600, timeout=10):
+    """Thread definition - barcode scanning
+
+    Args:
+        queue_output (Queue): Queue for communicating with sending thread
+        com_port (str, optional): COM port address of scanner. Defaults to 'COM3'.
+        baud (int, optional): COM port baud. Defaults to 9600.
+        timeout (int, optional): Scanner timeout. Defaults to 10.
+    """
     serial_data = ''
     serial_data_last = ''
     while True:
@@ -28,6 +36,15 @@ def scanning_loop(queue_output, com_port='COM3', baud=9600, timeout=10):
 
 
 def parse_and_send_loop(queue_input, ip_address_dest, station_no, pipeline, period):
+    """Thread definition - sending data
+
+    Args:
+        queue_input (Queue): Queue with barcodes to send
+        ip_address_dest (str): IP address of receiver
+        station_no (int): No of station
+        pipeline (int): No of pipeline
+        period (float): Period of time to send data is seconds
+    """
     packet_counter = 0
     barcode_counter = 0
     barcode = ''
