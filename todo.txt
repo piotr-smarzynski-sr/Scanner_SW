@@ -1,0 +1,12 @@
+na ekranie wyswietlac zawartosc odczytanej linii i numer liniijesli jest puste lub jej nie bylo to tez dac info
+jesli pod numerem jest pusto napisac komunikat "Brak panelu" i zmienic kolor tla na czerwony lub zolty
+jezeli ok to normalnie czarny
+wyswietlic dane ostatnej ramki gdzies w rogu
+
+
+Ponizej szkic wygladu konsoli:
+
+NR linii            Zawartosc linii
+
+
+ostatnia wiadomosć udp

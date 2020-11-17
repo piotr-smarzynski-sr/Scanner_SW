@@ -27,7 +27,7 @@ def pack_data_egd(protocol_no,
                   station_no):
 
     from struct import pack
-    packed = pack('<BBHBBBBIQIIIIBB',                  
+    packed = pack('<BBHBBBBIQIIIHBB',                  
                   protocol_no,
                   protocol_version,
                   request_id,
