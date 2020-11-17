@@ -14,11 +14,11 @@ from time import sleep
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('-pipe' ,'--pipeline', type=int, default=1, help='Pipeline no')
-    parser.add_argument('-ip', '--ip_address', type=str, default='192.168.254.92', help='IP address of receiver')
+    parser.add_argument('-pipe' ,'--pipeline', type=int, default=7, help='Pipeline no')
+    parser.add_argument('-ip', '--ip_address', type=str, default='192.168.0.11', help='IP address of receiver')
     parser.add_argument('-s', '--station', type=int, default=1, help='Station no')
     parser.add_argument('-c', '--com_port', type=str, default='COM3', help='COM port of scanner')
-    parser.add_argument('-p', '--period', type=float, default=0.1, help='Time period to send data')
+    parser.add_argument('-p', '--period', type=float, default=0.05, help='Time period to send data')
     args = parser.parse_args()
 
     barcode_queue = Queue()

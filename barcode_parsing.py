@@ -20,15 +20,15 @@ def parseBCR(barcode):
     barcode = barcode.replace(" ", "") # remove spaces
     barcode = barcode.replace("_R2", "") # remove suffix
     parsed = barcode.split('-')
-    if len(parsed) == BARCODE_EXPECTED_PARTS:
+    if len(parsed) >= BARCODE_EXPECTED_PARTS:
         for index, part in enumerate(parsed):
-            if part.isnumeric() is False:
+            if part.isnumeric() is False and part != '':
                 s_print('Part', index + 1, 'of barcode is not numeric:', part)
 
         s_print('parsed: ', parsed)
         label_correct = int(parsed[LABEL_CORRECT])
-        if label_correct >= 0 and label_correct <= 105:
-            line_no_search = int(parsed[LINE_NO_SEARCH])
+        if label_correct == 105:
+            line_no_search = int(parsed[LINE_NO_SEARCH][:4])
 
         return line_no_search
     

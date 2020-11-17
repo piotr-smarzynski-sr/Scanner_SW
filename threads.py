@@ -25,11 +25,13 @@ def scanning_loop(queue_output, com_port='COM3', baud=9600, timeout=10):
     """
     serial_data = ''
     serial_data_last = ''
+    counter = 0
     while True:
         serial_data = scanBCR(com_port, baud, timeout)
 
-        if serial_data != serial_data_last and serial_data != '':
+        if serial_data != '':
             queue_output.put(serial_data)
+            # counter += 1
 
         serial_data_last = serial_data
         sleep(1)
@@ -49,6 +51,8 @@ def parse_and_send_loop(queue_input, ip_address_dest, station_no, pipeline, peri
     barcode_counter = 0
     barcode = ''
     line = 0
+    newline = 0
+    text_last = ''
     while True:        
         if queue_input.empty() is False:
             barcode = queue_input.get()
@@ -56,12 +60,27 @@ def parse_and_send_loop(queue_input, ip_address_dest, station_no, pipeline, peri
             if barcode_counter > 255:
                 barcode_counter = 0
             s_print('barcode_counter: ', barcode_counter)
-            line = parseBCR(barcode)
+            newline = parseBCR(barcode)
+            if newline != 0:
+                line = newline
             s_print('line: ', line)
 
         text = searchLineFromBCR(line, 'barcodes.txt')
-        if text != 'NOT_FOUND':
+        if text != 'NOT_FOUND' and text != text_last:
             s_print('text: ', text)
+            s_print('msg: ',PROTOCOL_NO, 
+                            PROTOCOL_VERSION, 
+                            packet_counter, 
+                            ip_parsed, 
+                            pipeline, 
+                            TIMESTAMP, 
+                            STATUS, 
+                            CONF_SIGNATURE, 
+                            RESERVED, 
+                            line, 
+                            barcode_counter, 
+                            station_no)
+            text_last = text
 
         ip_address = get_ip()
         ip_parsed = parse_ip(ip_address)
@@ -79,20 +98,22 @@ def parse_and_send_loop(queue_input, ip_address_dest, station_no, pipeline, peri
                             barcode_counter, 
                             station_no)
         
-        s_print('msg: ',PROTOCOL_NO, 
-                        PROTOCOL_VERSION, 
-                        packet_counter, 
-                        ip_parsed, 
-                        pipeline, 
-                        TIMESTAMP, 
-                        STATUS, 
-                        CONF_SIGNATURE, 
-                        RESERVED, 
-                        line, 
-                        barcode_counter, 
-                        station_no)
+
 
         send_data(ip_address_dest, 18246, msg) #dane muszą być wysyłane często, nawet 10/s, bo robot zerwie komunikację
+
+        s_print('msg: ',PROTOCOL_NO, 
+                PROTOCOL_VERSION, 
+                packet_counter, 
+                ip_parsed, 
+                pipeline, 
+                TIMESTAMP, 
+                STATUS, 
+                CONF_SIGNATURE, 
+                RESERVED, 
+                line, 
+                barcode_counter, 
+                station_no)
 
         packet_counter += 1
         if packet_counter > 65535:
