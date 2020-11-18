@@ -7,12 +7,16 @@ from barcode_parsing import parseBCR
 from scanner_api import scanBCR
 from thread_print import s_print
 
+from queue import Queue
+
 PROTOCOL_NO = 13
 PROTOCOL_VERSION = 1
 TIMESTAMP = 0
 STATUS = 0
 CONF_SIGNATURE = 0
 RESERVED = 0
+
+gui_queue = Queue()
 
 def scanning_loop(queue_output, com_port='COM3', baud=9600, timeout=10):
     """Thread definition - barcode scanning
@@ -52,38 +56,49 @@ def parse_and_send_loop(queue_input, ip_address_dest, station_no, pipeline, peri
     barcode = ''
     line = 0
     newline = 0
+    text = ''
     text_last = ''
+    ip_address = get_ip()
+    ip_parsed = parse_ip(ip_address)
     while True:        
         if queue_input.empty() is False:
             barcode = queue_input.get()
             barcode_counter += 1
             if barcode_counter > 255:
                 barcode_counter = 0
-            s_print('barcode_counter: ', barcode_counter)
+
+            # s_print('barcode_counter: ', barcode_counter)
             newline = parseBCR(barcode)
+            
+            text = searchLineFromBCR(newline, 'barcodes.txt')
+            # if newline != 0: and text != 'NOT_FOUND':
             if newline != 0:
                 line = newline
-            s_print('line: ', line)
 
-        text = searchLineFromBCR(line, 'barcodes.txt')
-        if text != 'NOT_FOUND' and text != text_last:
-            s_print('text: ', text)
-            s_print('msg: ',PROTOCOL_NO, 
-                            PROTOCOL_VERSION, 
-                            packet_counter, 
-                            ip_parsed, 
-                            pipeline, 
-                            TIMESTAMP, 
-                            STATUS, 
-                            CONF_SIGNATURE, 
-                            RESERVED, 
-                            line, 
-                            barcode_counter, 
-                            station_no)
-            text_last = text
+            # s_print('line: ', line)
+            # s_print('text: ', text)
+            # s_print('msg: ',PROTOCOL_NO, 
+            #                 PROTOCOL_VERSION, 
+            #                 packet_counter, 
+            #                 ip_parsed, 
+            #                 pipeline, 
+            #                 TIMESTAMP, 
+            #                 STATUS, 
+            #                 CONF_SIGNATURE, 
+            #                 RESERVED, 
+            #                 line, 
+            #                 barcode_counter, 
+            #                 station_no)
 
-        ip_address = get_ip()
-        ip_parsed = parse_ip(ip_address)
+            text_last = text   
+            gui_queue.put([barcode,  
+                           text,
+                           packet_counter, 
+                           ip_parsed, 
+                           pipeline,
+                           line, 
+                           barcode_counter, 
+                           station_no])    
 
         msg = pack_data_egd(PROTOCOL_NO, 
                             PROTOCOL_VERSION, 
@@ -102,22 +117,7 @@ def parse_and_send_loop(queue_input, ip_address_dest, station_no, pipeline, peri
 
         send_data(ip_address_dest, 18246, msg) #dane muszą być wysyłane często, nawet 10/s, bo robot zerwie komunikację
 
-        s_print('msg: ',PROTOCOL_NO, 
-                PROTOCOL_VERSION, 
-                packet_counter, 
-                ip_parsed, 
-                pipeline, 
-                TIMESTAMP, 
-                STATUS, 
-                CONF_SIGNATURE, 
-                RESERVED, 
-                line, 
-                barcode_counter, 
-                station_no)
-
         packet_counter += 1
         if packet_counter > 65535:
             packet_counter = 0
         sleep(period)
-
-

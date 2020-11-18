@@ -4,8 +4,9 @@ import socket
 from udp_communication import get_ip, parse_ip, send_data
 from data_packing import pack_data, pack_data_egd
 from file_handling import searchLineFromBCR, checkFile
-from threads import parse_and_send_loop, scanning_loop
+from threads import parse_and_send_loop, scanning_loop, gui_queue
 from thread_print import s_print
+from gui import gui
 
 import argparse
 from threading import Thread
@@ -40,6 +41,11 @@ if __name__ == "__main__":
                                 'station_no': args.station,
                                 'pipeline': args.pipeline,
                                 'period': args.period},
+                        daemon=True))
+
+    threads.append(Thread(name="gui",
+                        target=gui,
+                        kwargs={},
                         daemon=True))
 
     for thread in threads:

@@ -25,7 +25,7 @@ def parseBCR(barcode):
             if part.isnumeric() is False and part != '':
                 s_print('Part', index + 1, 'of barcode is not numeric:', part)
 
-        s_print('parsed: ', parsed)
+        # s_print('parsed: ', parsed)
         label_correct = int(parsed[LABEL_CORRECT])
         if label_correct == 105:
             line_no_search = int(parsed[LINE_NO_SEARCH][:4])
