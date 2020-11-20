@@ -1,3 +1,8 @@
+"""Swiss Rotors Barcode scanner interface
+Program scans barcodes, looks for data in file and send it via EGD protocol to Fanuc industrial robot.
+
+Author: Piotr Smarzyński
+"""
 from barcode_parsing import parseBCR
 from scanner_api import scanBCR, serialPorts
 import socket

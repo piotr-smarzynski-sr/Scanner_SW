@@ -33,5 +33,4 @@ packages/
 *cache*
 barcode_database/
 build/
-dist/
 *.spec
