@@ -28,20 +28,17 @@ def scanning_loop(queue_output, com_port='COM3', baud=9600, timeout=10):
         timeout (int, optional): Scanner timeout. Defaults to 10.
     """
     serial_data = ''
-    serial_data_last = ''
-    counter = 0
     while True:
         serial_data = scanBCR(com_port, baud, timeout)
 
         if serial_data != '':
             queue_output.put(serial_data)
-            # counter += 1
 
         serial_data_last = serial_data
         sleep(1)
 
 
-def parse_and_send_loop(queue_input, ip_address_dest, station_no, pipeline, period):
+def parse_and_send_loop(queue_input, ip_address_dest, station_no, pipeline, filename, period):
     """Thread definition - sending data
 
     Args:
@@ -70,7 +67,7 @@ def parse_and_send_loop(queue_input, ip_address_dest, station_no, pipeline, peri
             # s_print('barcode_counter: ', barcode_counter)
             newline = parseBCR(barcode)
             
-            text = searchLineFromBCR(newline, 'barcodes.txt')
+            text = searchLineFromBCR(newline, filename)
             # if newline != 0: and text != 'NOT_FOUND':
             if newline != 0:
                 line = newline
@@ -111,8 +108,7 @@ def parse_and_send_loop(queue_input, ip_address_dest, station_no, pipeline, peri
                             RESERVED, 
                             line, 
                             barcode_counter, 
-                            station_no)
-        
+                            station_no)     
 
 
         send_data(ip_address_dest, 18246, msg) #dane muszą być wysyłane często, nawet 10/s, bo robot zerwie komunikację

@@ -5,8 +5,12 @@ wyswietlic dane ostatnej ramki gdzies w rogu
 
 
 Ponizej szkic wygladu konsoli:
-
+------------------------------------------
 NR linii            Zawartosc linii
 
 
 ostatnia wiadomosć udp
+------------------------------------------
+
+
+#TODO poprawic pusty text jako brak panelu

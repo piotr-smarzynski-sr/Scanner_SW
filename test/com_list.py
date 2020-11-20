@@ -1,28 +1,9 @@
-from colorama import Fore, init
-from thread_print import s_print
+import sys
+import glob
+import serial
 
-init()
 
-def scanBCR(com_port='COM3', baud=9600, timeout=10):
-    """Use serial scanner to scan barcode
-
-    Args:
-        com_port (str): name of COM port. Defaults to COM3
-        baud (int): baud rate. Defaults to 9600
-        timeout (int): Timeout for scanning in seconds. Defaults to 10
-
-    Returns:
-        [type]: [description]
-    """
-    import serial
-    with serial.Serial(com_port, baud, timeout=timeout) as ser:
-        serial_data = ser.read(15)        # read up to ten bytes (timeout)
-        # if serial_data != b'':
-        #     s_print(Fore.RED, 'scanned: ', serial_data.decode(), Fore.RESET)
-        
-    return serial_data.decode()
-
-def serialPorts():
+def serial_ports():
     """ Lists serial port names
 
         :raises EnvironmentError:
@@ -30,9 +11,6 @@ def serialPorts():
         :returns:
             A list of the serial ports available on the system
     """
-    import sys
-    import glob
-    import serial
     if sys.platform.startswith('win'):
         ports = ['COM%s' % (i + 1) for i in range(256)]
     elif sys.platform.startswith('linux') or sys.platform.startswith('cygwin'):
@@ -52,3 +30,7 @@ def serialPorts():
         except (OSError, serial.SerialException):
             pass
     return result
+
+
+if __name__ == '__main__':
+    print(serial_ports())

@@ -8,7 +8,7 @@ class SampleApp(tk.Tk):
     def __init__(self, *args, **kwargs):
         tk.Tk.__init__(self, *args, **kwargs)
         self.title('Robot communication GUI')
-        self.geometry('900x320')
+        self.geometry('1000x320')
         self.gui_q = gui_queue
 
         row = 0
@@ -32,7 +32,7 @@ class SampleApp(tk.Tk):
         self.label_message_name.grid(column=0, row=row)
 
         self.label_message = tk.Label(self, text="", justify='right', font=("Arial", 25), foreground='blue')
-        self.label_message.grid(column=1, row=row, columnspan=4, sticky=tk.E)
+        self.label_message.grid(column=1, row=row, columnspan=4, sticky=tk.W)
 
         
         col_count, row_count = self.grid_size()
@@ -53,10 +53,13 @@ class SampleApp(tk.Tk):
 
             self.label_line_no.configure(text=element[5])
             if element[1].endswith('\n'):
-                self.label_text.configure(text=element[1][:-2], background='gray')
+                if element[1] == '\n':
+                    self.label_text.configure(text='BRAK PANELU - PUSTY OPIS', background='red')
+                else:
+                    self.label_text.configure(text=element[1][:-2], background='lightgray')
             else:
-                if element[1] == 'NOT_FOUND':
-                    self.label_text.configure(text='BRAK PANELU', background='red')
+                if element[1] == 'NOT_FOUND' or element[1] == '':
+                    self.label_text.configure(text='BRAK PANELU - BRAK WPISU', background='red')
 
             self.label_message.configure(text=message)
 
