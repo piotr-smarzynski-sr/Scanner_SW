@@ -17,14 +17,17 @@ import argparse
 from threading import Thread
 from queue import Queue
 from time import sleep
+import sys
+from colorama import Fore, init
 
 if __name__ == "__main__":
+    init() #colorama
     parser = argparse.ArgumentParser()
     parser.add_argument('-pipe' ,'--pipeline', type=int, default=7, help='Pipeline no. Defaults to 7.')
     parser.add_argument('-ip', '--ip_address', type=str, default='192.168.0.11', help='IP address of receiver. Defaults to 192.168.0.11')
     parser.add_argument('-s', '--station', type=int, default=1, help='Station no. Defaults to 1')
-    parser.add_argument('-c', '--com_port', type=str, default='', help='COM port of scanner')
-    parser.add_argument('-p', '--period', type=float, default=0.05, help='Time period to send data. Defaults to 0.05')
+    parser.add_argument('-c', '--com_port', type=str, default='', help='COM port of scanner. If not set, scanner is autodetected')
+    parser.add_argument('-p', '--period', type=float, default=0.05, help='Time period to send data over EGD protocol. Defaults to 0.05')
     parser.add_argument('-f', '--filename', type=str, default='barcodes.txt', help='Name of file to search in. Defaults to barcodes.txt')
     args = parser.parse_args()
 
@@ -32,6 +35,10 @@ if __name__ == "__main__":
     checkFile(args.filename)
     com_ports = serialPorts()
     print('Active COM ports: ', com_ports)
+    if len(com_ports) == 0:
+        print(Fore.LIGHTRED_EX+ "No devices connected! Check USB connection of the scanner.", Fore.RESET)
+        sys.exit()
+
     if args.com_port == '':
         com_port = com_ports[0]
     else:

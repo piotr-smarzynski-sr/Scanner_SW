@@ -15,25 +15,21 @@ class SampleApp(tk.Tk):
         self.label_line_no_name = tk.Label(self, text="Linia", font=("Arial", 25))
         self.label_line_no_name.grid(column=0, row=row)
 
-
         self.label_line_no = tk.Label(self, text="", justify='right', font=("Arial", 25), foreground='blue')
         self.label_line_no.grid(column=1, row=0, sticky=tk.E)
 
-        # row += 1
         self.label_text_name = tk.Label(self, text="Panel", font=("Arial", 25))
         self.label_text_name.grid(column=2, row=row)
 
         self.label_text = tk.Label(self, text="", justify='right', font=("Arial", 25), foreground='blue')
         self.label_text.grid(column=3, row=row, sticky=tk.E)
 
-        row += 1
-        row += 5
+        row += 6
         self.label_message_name = tk.Label(self, text="UDP", font=("Arial", 25))
         self.label_message_name.grid(column=0, row=row)
 
         self.label_message = tk.Label(self, text="", justify='right', font=("Arial", 25), foreground='blue')
         self.label_message.grid(column=1, row=row, columnspan=4, sticky=tk.W)
-
         
         col_count, row_count = self.grid_size()
 

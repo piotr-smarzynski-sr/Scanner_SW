@@ -1,0 +1,2 @@
+start cmd /k C:\Users\piotr.smarzynski\AppData\Local\Programs\Python\Python37\Scripts\pyinstaller -F main.py -n scanner_win7
+start cmd /k C:\Users\piotr.smarzynski\AppData\Local\Programs\Python\Python39\Scripts\pyinstaller -F main.py -n scanner_win10

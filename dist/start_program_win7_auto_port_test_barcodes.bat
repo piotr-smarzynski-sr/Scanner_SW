@@ -1,1 +1,1 @@
-start cmd /k main_win7 -f barcodes_test.txt
+start cmd /k scanner_win7 -f barcodes_test.txt
