@@ -20,7 +20,7 @@ def parseBCR(barcode):
     barcode = barcode.replace(" ", "") # remove spaces
     barcode = barcode.replace("_R2", "") # remove suffix
     parsed = barcode.split('-')
-    if len(parsed) >= BARCODE_EXPECTED_PARTS:
+    if len(parsed) == BARCODE_EXPECTED_PARTS:
         for index, part in enumerate(parsed):
             if part.isnumeric() is False and part != '':
                 s_print('Part', index + 1, 'of barcode is not numeric:', part)

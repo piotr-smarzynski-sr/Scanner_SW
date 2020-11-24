@@ -60,16 +60,16 @@ def parse_and_send_loop(queue_input, ip_address_dest, station_no, pipeline, file
     while True:        
         if queue_input.empty() is False:
             barcode = queue_input.get()
-            barcode_counter += 1
-            if barcode_counter > 255:
-                barcode_counter = 0
+
 
             # s_print('barcode_counter: ', barcode_counter)
-            newline = parseBCR(barcode)
-            
+            newline = parseBCR(barcode)        
             text = searchLineFromBCR(newline, filename)
             # if newline != 0: and text != 'NOT_FOUND':
             if newline != 0:
+                barcode_counter += 1
+                if barcode_counter > 255:
+                    barcode_counter = 0
                 line = newline
 
             # s_print('line: ', line)
