@@ -14,3 +14,7 @@ ostatnia wiadomosć udp
 
 
 #TODO poprawic pusty text jako brak panelu
+
+
+1 value value time
+2 value time
