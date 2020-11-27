@@ -24,9 +24,12 @@ if __name__ == "__main__":
     init() #colorama
     parser = argparse.ArgumentParser()
     parser.add_argument('-pipe' ,'--pipeline', type=int, default=7, help='Pipeline no. Defaults to 7.')
-    parser.add_argument('-ip', '--ip_address', type=str, default='192.168.0.11', help='IP address of receiver. Defaults to 192.168.0.11')
-    parser.add_argument('-s', '--station', type=int, default=1, help='Station no. Defaults to 1')
-    parser.add_argument('-c', '--com_port', type=str, default='', help='COM port of scanner. If not set, scanner is autodetected')
+    parser.add_argument('-ip', '--ip_address', type=str, default='192.168.0.10', help='IP address of 1st receiver. Defaults to 192.168.0.10')
+    parser.add_argument('-ip2', '--ip_address2', type=str, default='192.168.0.11', help='IP address of 2nd receiver. Defaults to 192.168.0.11')
+    parser.add_argument('-s', '--station', type=int, default=0, help='Station no. Defaults to 0')
+    parser.add_argument('-s2', '--station2', type=int, default=1, help='Station no. Defaults to 1')
+    parser.add_argument('-c', '--com_port', type=str, default='COM8', help='COM port of 1st scanner. If not set, scanner is autodetected')
+    parser.add_argument('-c2', '--com_port2', type=str, default='COM9', help='COM port of 2nd scanner. If not set, scanner is autodetected')
     parser.add_argument('-p', '--period', type=float, default=0.05, help='Time period to send data over EGD protocol. Defaults to 0.05')
     parser.add_argument('-f', '--filename', type=str, default='barcodes.txt', help='Name of file to search in. Defaults to barcodes.txt')
     args = parser.parse_args()
@@ -39,17 +42,25 @@ if __name__ == "__main__":
         print(Fore.LIGHTRED_EX+ "No devices connected! Check USB connection of the scanner.", Fore.RESET)
         sys.exit()
 
-    if args.com_port == '':
-        com_port = com_ports[0]
-    else:
-        print('Forced COM port:', args.com_port)
-        com_port = args.com_port
+    # if args.com_port == '':
+    #     com_port = com_ports[0]
+    # else:
+    #     print('Forced COM port:', args.com_port)
+    #     com_port = args.com_port
 
     threads = []
     threads.append(Thread(name="scanning_loop",
                         target=scanning_loop, 
                         kwargs={'queue_output': barcode_queue,
-                                'com_port': com_port,
+                                'com_port': args.com_port,
+                                'baud':9600, 
+                                'timeout':10},
+                        daemon=True))
+
+    threads.append(Thread(name="scanning_loop",
+                        target=scanning_loop, 
+                        kwargs={'queue_output': barcode_queue,
+                                'com_port': args.com_port2,
                                 'baud':9600, 
                                 'timeout':10},
                         daemon=True))
@@ -57,8 +68,8 @@ if __name__ == "__main__":
     threads.append(Thread(name="parse_and_send_loop",
                         target=parse_and_send_loop,
                         kwargs={'queue_input': barcode_queue,
-                                'ip_address_dest': args.ip_address,
-                                'station_no': args.station,
+                                'ip_address_dest': [args.ip_address, args.ip_address2],
+                                'station_no': [args.station, args.station2],
                                 'pipeline': args.pipeline,
                                 'filename': args.filename,
                                 'period': args.period},

@@ -18,7 +18,7 @@ RESERVED = 0
 
 gui_queue = Queue()
 
-def scanning_loop(queue_output, com_port='COM3', baud=9600, timeout=10):
+def scanning_loop(queue_output, com_port='COM8', baud=9600, timeout=10):
     """Thread definition - barcode scanning
 
     Args:
@@ -32,9 +32,8 @@ def scanning_loop(queue_output, com_port='COM3', baud=9600, timeout=10):
         serial_data = scanBCR(com_port, baud, timeout)
 
         if serial_data != '':
-            queue_output.put(serial_data)
+            queue_output.put((serial_data, com_port))
 
-        serial_data_last = serial_data
         sleep(1)
 
 
@@ -59,33 +58,15 @@ def parse_and_send_loop(queue_input, ip_address_dest, station_no, pipeline, file
     ip_parsed = parse_ip(ip_address)
     while True:        
         if queue_input.empty() is False:
-            barcode = queue_input.get()
+            barcode, com_port = queue_input.get()
 
-
-            # s_print('barcode_counter: ', barcode_counter)
             newline = parseBCR(barcode)        
             text = searchLineFromBCR(newline, filename)
-            # if newline != 0: and text != 'NOT_FOUND':
             if newline != 0:
                 barcode_counter += 1
                 if barcode_counter > 255:
                     barcode_counter = 0
                 line = newline
-
-            # s_print('line: ', line)
-            # s_print('text: ', text)
-            # s_print('msg: ',PROTOCOL_NO, 
-            #                 PROTOCOL_VERSION, 
-            #                 packet_counter, 
-            #                 ip_parsed, 
-            #                 pipeline, 
-            #                 TIMESTAMP, 
-            #                 STATUS, 
-            #                 CONF_SIGNATURE, 
-            #                 RESERVED, 
-            #                 line, 
-            #                 barcode_counter, 
-            #                 station_no)
 
             text_last = text   
             gui_queue.put([barcode,  
