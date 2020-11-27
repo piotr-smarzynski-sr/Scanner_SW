@@ -24,12 +24,33 @@ class SampleApp(tk.Tk):
         self.label_text = tk.Label(self, text="", justify='right', font=("Arial", 25), foreground='blue')
         self.label_text.grid(column=3, row=row, sticky=tk.E)
 
-        row += 6
+        row += 1
         self.label_message_name = tk.Label(self, text="UDP", font=("Arial", 25))
         self.label_message_name.grid(column=0, row=row)
 
         self.label_message = tk.Label(self, text="", justify='right', font=("Arial", 25), foreground='blue')
         self.label_message.grid(column=1, row=row, columnspan=4, sticky=tk.W)
+
+        # 2ND SCANNER
+        row += 1
+        self.label_line_no_name2 = tk.Label(self, text="Linia", font=("Arial", 25))
+        self.label_line_no_name2.grid(column=0, row=row)
+
+        self.label_line_no2 = tk.Label(self, text="", justify='right', font=("Arial", 25), foreground='blue')
+        self.label_line_no2.grid(column=1, row=0, sticky=tk.E)
+
+        self.label_text_name2 = tk.Label(self, text="Panel", font=("Arial", 25))
+        self.label_text_name2.grid(column=2, row=row)
+
+        self.label_text2 = tk.Label(self, text="", justify='right', font=("Arial", 25), foreground='blue')
+        self.label_text2.grid(column=3, row=row, sticky=tk.E)
+
+        row += 1
+        self.label_message_name2 = tk.Label(self, text="UDP", font=("Arial", 25))
+        self.label_message_name2.grid(column=0, row=row)
+
+        self.label_message2 = tk.Label(self, text="", justify='right', font=("Arial", 25), foreground='blue')
+        self.label_message2.grid(column=1, row=row, columnspan=4, sticky=tk.W)
         
         col_count, row_count = self.grid_size()
 
@@ -47,17 +68,31 @@ class SampleApp(tk.Tk):
             print('element: ', element)
             message = str(PROTOCOL_NO) +' '+ str(PROTOCOL_VERSION) +' '+ str(element[2]) +' '+ str(element[3][0]) +'.'+ str(element[3][1]) +'.'+  str(element[3][2]) +'.'+  str(element[3][3]) +' '+  str(element[4]) +' '+ str(TIMESTAMP) +' '+ str(STATUS) +' '+ str(CONF_SIGNATURE) +' '+ str(RESERVED) +' '+ str(element[5]) +' '+ str(element[6]) +' '+ str(element[7]) +' ' 
 
-            self.label_line_no.configure(text=element[5])
-            if element[1].endswith('\n'):
-                if element[1] == '\n':
-                    self.label_text.configure(text='BRAK PANELU - PUSTY OPIS', background='red')
+            if element[-1] == 'COM8':
+                self.label_line_no.configure(text=element[5])
+                if element[1].endswith('\n'):
+                    if element[1] == '\n':
+                        self.label_text.configure(text='BRAK PANELU - PUSTY OPIS', background='red')
+                    else:
+                        self.label_text.configure(text=element[1][:-2], background='lightgray')
                 else:
-                    self.label_text.configure(text=element[1][:-2], background='lightgray')
-            else:
-                if element[1] == 'NOT_FOUND' or element[1] == '':
-                    self.label_text.configure(text='BRAK PANELU - BRAK WPISU', background='red')
+                    if element[1] == 'NOT_FOUND' or element[1] == '':
+                        self.label_text.configure(text='BRAK PANELU - BRAK WPISU', background='red')
 
-            self.label_message.configure(text=message)
+                self.label_message.configure(text=message)
+
+            elif element[-1] == 'COM9':
+                self.label_line_no2.configure(text=element[5])
+                if element[1].endswith('\n'):
+                    if element[1] == '\n':
+                        self.label_text2.configure(text='BRAK PANELU - PUSTY OPIS', background='red')
+                    else:
+                        self.label_text2.configure(text=element[1][:-2], background='lightgray')
+                else:
+                    if element[1] == 'NOT_FOUND' or element[1] == '':
+                        self.label_text2.configure(text='BRAK PANELU - BRAK WPISU', background='red')
+
+                self.label_message2.configure(text=message)
 
         self.after(50, self.update_labels)
 

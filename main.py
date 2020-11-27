@@ -69,7 +69,7 @@ if __name__ == "__main__":
                         target=parse_and_send_loop,
                         kwargs={'queue_input': barcode_queue,
                                 'ip_address_dest': [args.ip_address, args.ip_address2],
-                                'station_no': [args.station, args.station2],
+                                'station_nos': [args.station, args.station2],
                                 'pipeline': args.pipeline,
                                 'filename': args.filename,
                                 'period': args.period},

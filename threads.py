@@ -9,6 +9,8 @@ from thread_print import s_print
 
 from queue import Queue
 
+from serial import SerialException
+
 PROTOCOL_NO = 13
 PROTOCOL_VERSION = 1
 TIMESTAMP = 0
@@ -29,7 +31,12 @@ def scanning_loop(queue_output, com_port='COM8', baud=9600, timeout=10):
     """
     serial_data = ''
     while True:
-        serial_data = scanBCR(com_port, baud, timeout)
+        try:
+            serial_data = scanBCR(com_port, baud, timeout)
+        except SerialException:
+            s_print('Could not open port', com_port)
+            sleep(10)
+            
 
         if serial_data != '':
             queue_output.put((serial_data, com_port))
@@ -37,7 +44,7 @@ def scanning_loop(queue_output, com_port='COM8', baud=9600, timeout=10):
         sleep(1)
 
 
-def parse_and_send_loop(queue_input, ip_address_dest, station_no, pipeline, filename, period):
+def parse_and_send_loop(queue_input, ip_address_dest, station_nos, pipeline, filename, period):
     """Thread definition - sending data
 
     Args:
@@ -47,54 +54,95 @@ def parse_and_send_loop(queue_input, ip_address_dest, station_no, pipeline, file
         pipeline (int): No of pipeline
         period (float): Period of time to send data is seconds
     """
-    packet_counter = 0
-    barcode_counter = 0
+    packet_counters = [0, 0]
+    barcode_counters = [0, 0]
     barcode = ''
-    line = 0
-    newline = 0
-    text = ''
-    text_last = ''
-    ip_address = get_ip()
-    ip_parsed = parse_ip(ip_address)
+    lines = [0, 0]
+    newlines = [0, 0]
+    texts = ['', '']
+    ip_address_local = get_ip()
+    ip_parsed_local = parse_ip(ip_address_local)
+    msgs = [None, None]
     while True:        
         if queue_input.empty() is False:
             barcode, com_port = queue_input.get()
+            if com_port == 'COM8':
+                station_no = station_nos[0]
+                newlines[0] = parseBCR(barcode)        
+                texts[0] = searchLineFromBCR(newlines[0], filename)
+                if newlines[0] != 0:
+                    barcode_counters[0] += 1
+                    if barcode_counters[0] > 255:
+                        barcode_counters[0] = 0
+                    lines[0] = newlines[0]
+ 
+                gui_queue.put([barcode,
+                            texts[0],
+                            packet_counters[0], 
+                            ip_parsed_local, 
+                            pipeline,
+                            lines[0], 
+                            barcode_counters[0], 
+                            station_no,
+                            com_port])  
 
-            newline = parseBCR(barcode)        
-            text = searchLineFromBCR(newline, filename)
-            if newline != 0:
-                barcode_counter += 1
-                if barcode_counter > 255:
-                    barcode_counter = 0
-                line = newline
+            if com_port == 'COM9':
+                station_no = station_nos[1]
+                newlines[1] = parseBCR(barcode)        
+                texts[1] = searchLineFromBCR(newlines[1], filename)
+                if newlines[1] != 0:
+                    barcode_counters[1] += 1
+                    if barcode_counters[1] > 255:
+                        barcode_counters[1] = 0
+                    lines[1] = newlines[1]
+ 
+                gui_queue.put([barcode,
+                            texts[1],
+                            packet_counters[1], 
+                            ip_parsed_local, 
+                            pipeline,
+                            lines[1], 
+                            barcode_counters[1], 
+                            station_no,
+                            com_port])    
 
-            text_last = text   
-            gui_queue.put([barcode,  
-                           text,
-                           packet_counter, 
-                           ip_parsed, 
-                           pipeline,
-                           line, 
-                           barcode_counter, 
-                           station_no])    
-
-        msg = pack_data_egd(PROTOCOL_NO, 
+        msgs[0] = pack_data_egd(PROTOCOL_NO, 
                             PROTOCOL_VERSION, 
-                            packet_counter, 
-                            ip_parsed, 
+                            packet_counters[0], 
+                            ip_parsed_local, 
                             pipeline, 
                             TIMESTAMP, 
                             STATUS, 
                             CONF_SIGNATURE, 
                             RESERVED, 
-                            line, 
-                            barcode_counter, 
-                            station_no)     
+                            lines[0], 
+                            barcode_counters[0], 
+                            station_nos[0])   
+
+        msgs[1] = pack_data_egd(PROTOCOL_NO, 
+                            PROTOCOL_VERSION, 
+                            packet_counters[1], 
+                            ip_parsed_local, 
+                            pipeline, 
+                            TIMESTAMP, 
+                            STATUS, 
+                            CONF_SIGNATURE, 
+                            RESERVED, 
+                            lines[1], 
+                            barcode_counters[1], 
+                            station_nos[1])     
 
 
-        send_data(ip_address_dest, 18246, msg) #dane muszą być wysyłane często, nawet 10/s, bo robot zerwie komunikację
 
-        packet_counter += 1
-        if packet_counter > 65535:
-            packet_counter = 0
+
+        send_data(ip_address_dest[0], 18246, msgs[0]) #dane muszą być wysyłane często, nawet 10/s, bo robot zerwie komunikację
+        send_data(ip_address_dest[1], 18246, msgs[1]) #dane muszą być wysyłane często, nawet 10/s, bo robot zerwie komunikację
+
+        packet_counters[0] += 1
+        if packet_counters[0] > 65535:
+            packet_counters[0] = 0
+        
+        packet_counters[1] += 1
+        if packet_counters[1] > 65535:
+            packet_counters[1] = 0
         sleep(period)
