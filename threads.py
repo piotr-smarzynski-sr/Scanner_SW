@@ -66,9 +66,10 @@ def parse_and_send_loop(queue_input, ip_address_dest, station_nos, pipeline, fil
     while True:        
         if queue_input.empty() is False:
             barcode, com_port = queue_input.get()
-            if com_port == 'COM8':
-                station_no = station_nos[0]
-                newlines[0] = parseBCR(barcode)        
+            newline, station = parseBCR(barcode)
+            if station == 0:
+                newlines[0] = newline
+                station_no = station_nos[0]                      
                 texts[0] = searchLineFromBCR(newlines[0], filename)
                 if newlines[0] != 0:
                     barcode_counters[0] += 1
@@ -86,9 +87,9 @@ def parse_and_send_loop(queue_input, ip_address_dest, station_nos, pipeline, fil
                             station_no,
                             com_port])  
 
-            if com_port == 'COM9':
+            elif station == 1:
                 station_no = station_nos[1]
-                newlines[1] = parseBCR(barcode)        
+                newlines[1] = newline     
                 texts[1] = searchLineFromBCR(newlines[1], filename)
                 if newlines[1] != 0:
                     barcode_counters[1] += 1

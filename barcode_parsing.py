@@ -6,7 +6,7 @@ TEXT_SEARCH = 3
 LINE_TEXT_BARCODE = 1
 BARCODE_EXPECTED_PARTS = 4
 
-def parseBCR(barcode):
+def parseBCR(barcode_raw):
     """Parse scanned barcode
 
     Args:
@@ -15,24 +15,36 @@ def parseBCR(barcode):
     Returns:
         int: number of line extracted from barcode
     """
-    line_no_search = 0
-    barcode = barcode.replace("*", "") # remove asterisks
-    barcode = barcode.replace(" ", "") # remove spaces
-    barcode = barcode.replace("_R2", "") # remove suffix
-    parsed = barcode.split('-')
-    if len(parsed) == BARCODE_EXPECTED_PARTS:
-        for index, part in enumerate(parsed):
-            if part.isnumeric() is False and part != '':
-                s_print('Part', index + 1, 'of barcode is not numeric:', part)
 
-        # s_print('parsed: ', parsed)
-        label_correct = int(parsed[LABEL_CORRECT])
-        if label_correct == 105:
-            line_no_search = int(parsed[LINE_NO_SEARCH][:4])
+    barcode_station = barcode_raw.split('_')
+    if len(barcode_station) != 2:
+        return 0,0
+    elif len(barcode_station) == 2:
+        station = 0
+        if barcode_station[0] == 'S0':
+            station = 0
+        if barcode_station[1] == 'S1':
+            station = 1
+        
+        line_no_search = 0
+        barcode = barcode_station[0]
+        barcode = barcode.replace("*", "") # remove asterisks
+        barcode = barcode.replace(" ", "") # remove spaces
+        barcode = barcode.replace("_R2", "") # remove suffix
+        parsed = barcode.split('-')
+        if len(parsed) == BARCODE_EXPECTED_PARTS:
+            for index, part in enumerate(parsed):
+                if part.isnumeric() is False and part != '':
+                    s_print('Part', index + 1, 'of barcode is not numeric:', part)
 
-        return line_no_search
-    
-    else:
-        # s_print('Wrong barcode scanned!')
-        return 0
+            # s_print('parsed: ', parsed)
+            label_correct = int(parsed[LABEL_CORRECT])
+            if label_correct == 105:
+                line_no_search = int(parsed[LINE_NO_SEARCH][:4])
+
+            return line_no_search, station
+        
+        else:
+            # s_print('Wrong barcode scanned!')
+            return 0, 0
     
