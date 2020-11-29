@@ -16,7 +16,7 @@ class SampleApp(tk.Tk):
         self.label_line_no_name.grid(column=0, row=row)
 
         self.label_line_no = tk.Label(self, text="", justify='right', font=("Arial", 25), foreground='blue')
-        self.label_line_no.grid(column=1, row=0, sticky=tk.E)
+        self.label_line_no.grid(column=1, row=row, sticky=tk.E)
 
         self.label_text_name = tk.Label(self, text="Panel", font=("Arial", 25))
         self.label_text_name.grid(column=2, row=row)
@@ -37,7 +37,7 @@ class SampleApp(tk.Tk):
         self.label_line_no_name2.grid(column=0, row=row)
 
         self.label_line_no2 = tk.Label(self, text="", justify='right', font=("Arial", 25), foreground='blue')
-        self.label_line_no2.grid(column=1, row=0, sticky=tk.E)
+        self.label_line_no2.grid(column=1, row=row, sticky=tk.E)
 
         self.label_text_name2 = tk.Label(self, text="Panel", font=("Arial", 25))
         self.label_text_name2.grid(column=2, row=row)
@@ -68,7 +68,7 @@ class SampleApp(tk.Tk):
             print('element: ', element)
             message = str(PROTOCOL_NO) +' '+ str(PROTOCOL_VERSION) +' '+ str(element[2]) +' '+ str(element[3][0]) +'.'+ str(element[3][1]) +'.'+  str(element[3][2]) +'.'+  str(element[3][3]) +' '+  str(element[4]) +' '+ str(TIMESTAMP) +' '+ str(STATUS) +' '+ str(CONF_SIGNATURE) +' '+ str(RESERVED) +' '+ str(element[5]) +' '+ str(element[6]) +' '+ str(element[7]) +' ' 
 
-            if element[-1] == 'COM8':
+            if element[-1] == 0:
                 self.label_line_no.configure(text=element[5])
                 if element[1].endswith('\n'):
                     if element[1] == '\n':
@@ -81,7 +81,7 @@ class SampleApp(tk.Tk):
 
                 self.label_message.configure(text=message)
 
-            elif element[-1] == 'COM9':
+            elif element[-1] == 1:
                 self.label_line_no2.configure(text=element[5])
                 if element[1].endswith('\n'):
                     if element[1] == '\n':

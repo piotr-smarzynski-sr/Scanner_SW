@@ -84,8 +84,8 @@ def parse_and_send_loop(queue_input, ip_address_dest, station_nos, pipeline, fil
                             pipeline,
                             lines[0], 
                             barcode_counters[0], 
-                            station_no,
-                            com_port])  
+                            station_no
+                            ])  
 
             elif station == 1:
                 station_no = station_nos[1]
@@ -104,8 +104,8 @@ def parse_and_send_loop(queue_input, ip_address_dest, station_nos, pipeline, fil
                             pipeline,
                             lines[1], 
                             barcode_counters[1], 
-                            station_no,
-                            com_port])    
+                            station_no
+                            ])    
 
         msgs[0] = pack_data_egd(PROTOCOL_NO, 
                             PROTOCOL_VERSION, 

@@ -20,7 +20,7 @@ from time import sleep
 import sys
 from colorama import Fore, init
 
-if __name__ == "__main__":
+def main():
     init() #colorama
     parser = argparse.ArgumentParser()
     parser.add_argument('-pipe' ,'--pipeline', type=int, default=7, help='Pipeline no. Defaults to 7.')
@@ -92,4 +92,7 @@ if __name__ == "__main__":
 
 
     #TODO close nicely
+
+if __name__ == "__main__":
+    main()    
     

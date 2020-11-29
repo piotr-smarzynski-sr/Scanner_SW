@@ -20,7 +20,7 @@ def parseBCR(barcode_raw):
     if len(barcode_station) != 2:
         return 0,0
     elif len(barcode_station) == 2:
-        station = 0
+        station = -1
         if barcode_station[0] == 'S0':
             station = 0
         if barcode_station[1] == 'S1':
