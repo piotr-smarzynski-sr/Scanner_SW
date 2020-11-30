@@ -67,45 +67,25 @@ def parse_and_send_loop(queue_input, ip_address_dest, station_nos, pipeline, fil
         if queue_input.empty() is False:
             barcode, com_port = queue_input.get()
             newline, station = parseBCR(barcode)
-            if station == 0:
-                newlines[0] = newline
-                station_no = station_nos[0]                      
-                texts[0] = searchLineFromBCR(newlines[0], filename)
-                if newlines[0] != 0:
-                    barcode_counters[0] += 1
-                    if barcode_counters[0] > 255:
-                        barcode_counters[0] = 0
-                    lines[0] = newlines[0]
- 
-                gui_queue.put([barcode,
-                            texts[0],
-                            packet_counters[0], 
-                            ip_parsed_local, 
-                            pipeline,
-                            lines[0], 
-                            barcode_counters[0], 
-                            station_no
-                            ])  
 
-            elif station == 1:
-                station_no = station_nos[1]
-                newlines[1] = newline     
-                texts[1] = searchLineFromBCR(newlines[1], filename)
-                if newlines[1] != 0:
-                    barcode_counters[1] += 1
-                    if barcode_counters[1] > 255:
-                        barcode_counters[1] = 0
-                    lines[1] = newlines[1]
- 
-                gui_queue.put([barcode,
-                            texts[1],
-                            packet_counters[1], 
-                            ip_parsed_local, 
-                            pipeline,
-                            lines[1], 
-                            barcode_counters[1], 
-                            station_no
-                            ])    
+            newlines[station] = newline
+            station_no = station
+            texts[station] = searchLineFromBCR(newlines[station], filename)
+            if newlines[station] != 0:
+                barcode_counters[station] += 1
+                if barcode_counters[station] > 255:
+                    barcode_counters[station] = 0
+                lines[station] = newlines[station]
+
+            gui_queue.put([barcode,
+                        texts[station],
+                        packet_counters[station], 
+                        ip_parsed_local, 
+                        pipeline,
+                        lines[station], 
+                        barcode_counters[station], 
+                        station_no
+                        ]) 
 
         msgs[0] = pack_data_egd(PROTOCOL_NO, 
                             PROTOCOL_VERSION, 
@@ -131,10 +111,7 @@ def parse_and_send_loop(queue_input, ip_address_dest, station_nos, pipeline, fil
                             RESERVED, 
                             lines[1], 
                             barcode_counters[1], 
-                            station_nos[1])     
-
-
-
+                            station_nos[1])
 
         send_data(ip_address_dest[0], 18246, msgs[0]) #dane muszą być wysyłane często, nawet 10/s, bo robot zerwie komunikację
         send_data(ip_address_dest[1], 18246, msgs[1]) #dane muszą być wysyłane często, nawet 10/s, bo robot zerwie komunikację

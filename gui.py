@@ -12,6 +12,10 @@ class SampleApp(tk.Tk):
         self.gui_q = gui_queue
 
         row = 0
+        self.label_side_name_left = tk.Label(self, text="LEWA", font=("Arial", 25))
+        self.label_side_name_left.grid(column=0, row=row)
+        row += 1
+
         self.label_line_no_name = tk.Label(self, text="Linia", font=("Arial", 25))
         self.label_line_no_name.grid(column=0, row=row)
 
@@ -32,7 +36,11 @@ class SampleApp(tk.Tk):
         self.label_message.grid(column=1, row=row, columnspan=4, sticky=tk.W)
 
         # 2ND SCANNER
+        row += 2
+        self.label_side_name_right = tk.Label(self, text="PRAWA", font=("Arial", 25))    
+        self.label_side_name_right.grid(column=0, row=row)    
         row += 1
+
         self.label_line_no_name2 = tk.Label(self, text="Linia", font=("Arial", 25))
         self.label_line_no_name2.grid(column=0, row=row)
 

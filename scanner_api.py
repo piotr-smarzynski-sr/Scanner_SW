@@ -16,9 +16,10 @@ def scanBCR(com_port='COM3', baud=9600, timeout=10):
     """
     import serial
     with serial.Serial(com_port, baud, timeout=timeout) as ser:
-        serial_data = ser.read(18)        # read up to ten bytes (timeout)
+        serial_data = ser.read(18)        # read up to 18 bytes (timeout)
         if serial_data != b'':
-            s_print(Fore.RED, 'scanned: ', serial_data.decode(), Fore.RESET)
+            # s_print(Fore.RED, 'scanned: ', serial_data.decode(), Fore.RESET)
+            pass
         
     return serial_data.decode()
 
