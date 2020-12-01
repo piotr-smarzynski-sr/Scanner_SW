@@ -35,8 +35,7 @@ def scanning_loop(queue_output, com_port='COM8', baud=9600, timeout=10):
             serial_data = scanBCR(com_port, baud, timeout)
         except SerialException:
             s_print('Could not open port', com_port)
-            sleep(10)
-            
+            sleep(10)            
 
         if serial_data != '':
             queue_output.put((serial_data, com_port))
@@ -52,7 +51,7 @@ def parse_and_send_loop(queue_input, ip_address_dest, station_nos, pipeline, fil
         ip_address_dest (str): IP address of receiver
         station_no (int): No of station
         pipeline (int): No of pipeline
-        period (float): Period of time to send data is seconds
+        period (float): Period of time to send data in seconds
     """
     packet_counters = [0, 0]
     barcode_counters = [0, 0]
