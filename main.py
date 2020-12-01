@@ -23,8 +23,9 @@ from colorama import Fore, init
 def main():
     init() #colorama
     parser = argparse.ArgumentParser()
-    parser.add_argument('-pipe' ,'--pipeline', type=int, default=7, help='Pipeline no. Defaults to 7.')
-    parser.add_argument('-ip', '--ip_address', type=str, default='192.168.0.10', help='IP address of 1st receiver. Defaults to 192.168.0.10')
+    parser.add_argument('-pipe' ,'--pipeline', type=int, default=7, help='Pipeline no. Defaults to 8.')
+    parser.add_argument('-pipe2' ,'--pipeline2', type=int, default=8, help='Pipeline no. Defaults to 7.')
+    parser.add_argument('-ip', '--ip_address', type=str, default='192.168.0.12', help='IP address of 1st receiver. Defaults to 192.168.0.10')
     parser.add_argument('-ip2', '--ip_address2', type=str, default='192.168.0.11', help='IP address of 2nd receiver. Defaults to 192.168.0.11')
     parser.add_argument('-s', '--station', type=int, default=0, help='Station no. Defaults to 0')
     parser.add_argument('-s2', '--station2', type=int, default=1, help='Station no. Defaults to 1')
@@ -77,7 +78,7 @@ def main():
                         kwargs={'queue_input': barcode_queue,
                                 'ip_address_dest': [args.ip_address, args.ip_address2],
                                 'station_nos': [args.station, args.station2],
-                                'pipeline': args.pipeline,
+                                'pipelines': [args.pipeline, args.pipeline2],                                
                                 'filename': args.filename,
                                 'period': args.period},
                         daemon=True))

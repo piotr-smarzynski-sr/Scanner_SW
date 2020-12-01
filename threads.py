@@ -43,7 +43,7 @@ def scanning_loop(queue_output, com_port='COM8', baud=9600, timeout=10):
         sleep(1)
 
 
-def parse_and_send_loop(queue_input, ip_address_dest, station_nos, pipeline, filename, period):
+def parse_and_send_loop(queue_input, ip_address_dest, station_nos, pipelines, filename, period):
     """Thread definition - sending data
 
     Args:
@@ -80,7 +80,7 @@ def parse_and_send_loop(queue_input, ip_address_dest, station_nos, pipeline, fil
                         texts[station],
                         packet_counters[station], 
                         ip_parsed_local, 
-                        pipeline,
+                        pipelines[station],
                         lines[station], 
                         barcode_counters[station], 
                         station_no
@@ -90,7 +90,7 @@ def parse_and_send_loop(queue_input, ip_address_dest, station_nos, pipeline, fil
                             PROTOCOL_VERSION, 
                             packet_counters[0], 
                             ip_parsed_local, 
-                            pipeline, 
+                            pipelines[0], 
                             TIMESTAMP, 
                             STATUS, 
                             CONF_SIGNATURE, 
@@ -103,7 +103,7 @@ def parse_and_send_loop(queue_input, ip_address_dest, station_nos, pipeline, fil
                             PROTOCOL_VERSION, 
                             packet_counters[1], 
                             ip_parsed_local, 
-                            pipeline, 
+                            pipelines[1], 
                             TIMESTAMP, 
                             STATUS, 
                             CONF_SIGNATURE, 
