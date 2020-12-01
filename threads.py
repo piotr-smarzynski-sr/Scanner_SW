@@ -69,15 +69,18 @@ def parse_and_send_loop(queue_input, ip_address_dest, station_nos, pipelines, fi
 
             newlines[station] = newline
             station_no = station
-            texts[station] = searchLineFromBCR(newlines[station], filename)
-            if newlines[station] != 0:
-                barcode_counters[station] += 1
-                if barcode_counters[station] > 255:
-                    barcode_counters[station] = 0
-                lines[station] = newlines[station]
+            # texts[station] = searchLineFromBCR(newlines[station], filename)
+            text = searchLineFromBCR(newlines[station], filename)
+            if text != 'NOT_FOUND' and text != '':
+                texts[station] = text
+                if newlines[station] != 0:
+                    barcode_counters[station] += 1
+                    if barcode_counters[station] > 255:
+                        barcode_counters[station] = 0
+                    lines[station] = newlines[station]
 
             gui_queue.put([barcode,
-                        texts[station],
+                        text,
                         packet_counters[station], 
                         ip_parsed_local, 
                         pipelines[station],
