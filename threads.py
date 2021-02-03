@@ -20,7 +20,7 @@ RESERVED = 0
 
 gui_queue = Queue()
 
-def scanning_loop(queue_output, com_port='COM8', baud=9600, timeout=10):
+def scanning_loop(queue_output, com_port='dev/ttyUSB0', baud=9600, timeout=10):
     """Thread definition - barcode scanning
 
     Args:
@@ -33,9 +33,10 @@ def scanning_loop(queue_output, com_port='COM8', baud=9600, timeout=10):
     while True:
         try:
             serial_data = scanBCR(com_port, baud, timeout)
-        except SerialException:
+        except SerialException as e:
             s_print('Could not open port', com_port)
-            sleep(10)            
+            s_print(e)          
+            sleep(2)            
 
         if serial_data != '':
             queue_output.put((serial_data, com_port))
