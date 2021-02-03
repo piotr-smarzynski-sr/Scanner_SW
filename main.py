@@ -73,7 +73,7 @@ def main():
         threads.append(Thread(name="scanning_loop2",
                             target=scanning_loop, 
                             kwargs={'queue_output': barcode_queue,
-                                    'com_port': com_port,
+                                    'com_port': com_port2,
                                     'baud':9600, 
                                     'timeout':10},
                             daemon=True))
