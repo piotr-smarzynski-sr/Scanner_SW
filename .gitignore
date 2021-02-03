@@ -34,3 +34,4 @@ packages/
 barcode_database/
 build/
 *.spec
+*.zip
