@@ -15,20 +15,17 @@ def parseBCR(barcode_raw):
     Returns:
         int: number of line extracted from barcode
     """
-
+    station = 10
     barcode_station = barcode_raw.split('_')
     print('barcode_station: ', barcode_station)
 
     if len(barcode_station) == 2:
-        # print('barcode_station: ', barcode_station)
         if barcode_station[1][0] == 'S':
             try:
-                station = int(barcode_station[1][1:])
-                # if barcode_station[1] == 'S0':
-                #     station = 0
-                # if barcode_station[1] == 'S1':
-                #     station = 1
-                
+                if barcode_station[1][1].isnumeric:
+                    station = int(barcode_station[1][1])
+
+                print('station: ', station)                
                 line_no_search = 0
                 barcode = barcode_station[0]
                 barcode = barcode.replace("*", "") # remove asterisks
@@ -40,7 +37,6 @@ def parseBCR(barcode_raw):
                         if part.isnumeric() is False and part != '':
                             s_print('Part', index + 1, 'of barcode is not numeric:', part)
 
-                    # s_print('parsed: ', parsed)
                     label_correct = int(parsed[LABEL_CORRECT])
                     if label_correct == 105:
                         line_no_search = int(parsed[LINE_NO_SEARCH][:4])
@@ -48,11 +44,11 @@ def parseBCR(barcode_raw):
                     return line_no_search, station
                 
                 else:
-                    # s_print('Wrong barcode scanned!')
-                    return 0, 0
+                    s_print('Wrong barcode scanned!')
+                    return 0, station
             except:
                 return 0, 0
 
     elif len(barcode_station) != 2:
-        return 0,0
+        return 0, 0
     
