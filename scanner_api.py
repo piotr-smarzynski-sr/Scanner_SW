@@ -20,8 +20,11 @@ def scanBCR(com_port='COM3', baud=9600, timeout=10):
         if serial_data != b'':
             # s_print(Fore.RED, 'scanned: ', serial_data.decode(), Fore.RESET)
             pass
-        
-    return serial_data.decode()
+    try:   
+        return serial_data.decode()        
+    except UnicodeDecodeError:
+        print('Scanner exception! Serial_data: ', serial_data)
+        return ''
 
 def serialPorts():
     """ Lists serial port names

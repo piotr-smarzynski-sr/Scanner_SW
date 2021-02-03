@@ -43,13 +43,13 @@ def main():
         print(Fore.LIGHTRED_EX+ "No devices connected! Check USB connection of the scanner.", Fore.RESET)
         sys.exit()
 
-    if args.com_port is None:
+    if args.com_port is None and len(com_ports) > 0:
         com_port = com_ports[0]
     else:
         print('Forced COM port 1:', args.com_port)
         com_port = args.com_port
 
-    if args.com_port2 is None:
+    if args.com_port2 is None and len(com_ports) > 1:
 
         com_port2 = com_ports[1]
     else:
@@ -65,13 +65,14 @@ def main():
                                 'timeout':10},
                         daemon=True))
 
-    threads.append(Thread(name="scanning_loop",
-                        target=scanning_loop, 
-                        kwargs={'queue_output': barcode_queue,
-                                'com_port': com_port2,
-                                'baud':9600, 
-                                'timeout':10},
-                        daemon=True))
+    if com_port2 is not None:
+        threads.append(Thread(name="scanning_loop",
+                            target=scanning_loop, 
+                            kwargs={'queue_output': barcode_queue,
+                                    'com_port': com_port2,
+                                    'baud':9600, 
+                                    'timeout':10},
+                            daemon=True))
 
     threads.append(Thread(name="parse_and_send_loop",
                         target=parse_and_send_loop,
