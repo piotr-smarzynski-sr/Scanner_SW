@@ -35,3 +35,5 @@ barcode_database/
 build/
 *.spec
 *.zip
+/scanner_3_7/
+/.vscode/
