@@ -41,14 +41,7 @@ def serialPorts():
         ports = ['COM%s' % (i + 1) for i in range(256)]
     elif sys.platform.startswith('linux') or sys.platform.startswith('cygwin'):
         # this excludes your current terminal "/dev/tty"
-        ports = glob.glob('/dev/tty[A-Za-z]*')
-        
-        #import subprocess
-      #  for port in ports:
-      #      bashCommand = "sudo chmod 777 " + str(port)            
-      #      process = subprocess.Popen(bashCommand.split(), stdout=subprocess.PIPE)
-       #     output, error = process.communicate()
-        
+        ports = glob.glob('/dev/ttyUSB[0-9]*')
     elif sys.platform.startswith('darwin'):
         ports = glob.glob('/dev/tty.*')
     else:
